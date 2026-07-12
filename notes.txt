@@ -1,0 +1,43 @@
+1. Formato de pacote
+Utiliza a porta 1812
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |     Code      |  Identifier   |            Length             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                                                               |
+   |                         Authenticator                         |
+   |                                                               |
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |  Attributes ...
+   +-+-+-+-+-+-+-+-+-+-+-+-+-
+ 
+Os campos sao transmitidos da esquerda pra direita
+Codigo invalido -> Pacote descartado
+ 1 Access-Request
+ 2       Access-Accept
+ 3       Access-Reject
+ 4       Accounting-Request
+ 5       Accounting-Response
+ 11       Access-Challenge
+ 12       Status-Server (experimental)
+ 13       Status-Client (experimental)
+ 255       Reserved
+
+ É um pacote binário, não é json, nem texto
+ Estrutura {
+    Code          | 1 byte  | 1 - pedidio de login, 2 - aceito, 3 - rejeitado 
+    Identifier    | 1 byte  | cliente manda um numero, retorna o mesmo numero como resposta
+    Length        | 2 bytes | tamanho total do pacote
+    Authenticator | 16 bytes | valor aleatório (no pedido) usado depois pra descriptografar a senha e assinar a resposta 
+    Atributos     | ... | nome de usuario, senha, etc
+ }
+
+ Estrutura atributos {
+    Tipo    | 1 byte | 1 - nome de usuario, 2 - senha 
+    Tamanho | 1 byte | tamanho deste atributo inteiro, incluindo esses 2 bytes de cabeçalho
+    Valor   | ( Tamanho - 2 ) bytes | o dado em si
+ }
+
+
